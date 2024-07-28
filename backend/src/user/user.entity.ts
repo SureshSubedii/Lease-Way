@@ -1,4 +1,4 @@
-import { Otp } from 'src/otp/otp.entity';
+import { Otp } from '../otp/otp.entity';
 import {
   Column,
   CreateDateColumn,
