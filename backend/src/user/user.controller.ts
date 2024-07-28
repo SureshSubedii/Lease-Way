@@ -13,7 +13,6 @@ export class userController {
 
   @Post('verify_otp')
   verifyOtp(@Body() req) {
-    console.log(req.token);
     return this.userService.verifyOtp(req.token, req.uid);
   }
 }

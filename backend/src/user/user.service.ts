@@ -32,7 +32,7 @@ export class UserService {
     };
   }
 
-  verifyOtp(token, uid) {
+  verifyOtp(token: string, uid: number) {
     this.otpService.verifyOtp(token, uid);
   }
 }

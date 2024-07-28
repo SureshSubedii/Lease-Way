@@ -28,8 +28,9 @@ export class OtpService {
 
     return otp;
   }
-  async verifyOtp(token: string, uid: User): Promise<boolean> {
-    const secret = await this.otpRepo.findOneBy({ user_id: uid });
+  async verifyOtp(token: string, uid: number): Promise<boolean> {
+    const secret = await this.otpRepo.findOneBy({ user_id: { id: uid } });
+    if (!secret) return false;
     return totp.check(token, secret.otp_secret);
   }
 }
