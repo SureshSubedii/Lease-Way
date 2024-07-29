@@ -16,6 +16,7 @@ export default function RegisterForm(): JSX.Element {
         password: '', 
         contact: '',
          address: '',
+         confirmPass: '',
           otp: 0
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +44,7 @@ export default function RegisterForm(): JSX.Element {
                         handleChange={handleChange} />}
                 </form>
                 <p className={`mt-6 text-center ${textColor}`}>
-                    Already have  an sccount?{' '}
+                    Already have  an account?{' '}
                     <a
                         onClick={() => navigate("/login")}
                         className={`text-blue-500 hover:text-blue-600 cursor-pointer ${theme === 'Dark' ? 'Dark:text-blue-400 Dark:hover:text-blue-300' : ''}`}

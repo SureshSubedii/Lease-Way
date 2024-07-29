@@ -1,7 +1,8 @@
+import { toast } from "react-toastify";
 import { useTheme } from "../ThemeContext";
 type Step1Props = {
     onNext: () => void;
-    formData: { name: string; email: string, password: string, contact: string, address: string, otp: number }; 
+    formData: { name: string; email: string, password: string, contact: string, address: string, otp: number ,confirmPass: string}; 
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
 
@@ -61,6 +62,8 @@ type Step1Props = {
                 <input
                     type="password"
                     id="confirmPass"
+                    value={formData.confirmPass}
+                    onChange={ handleChange}
                     placeholder="Confirm your password"
                     className={`w-full px-4 py-2 border ${borderColor} rounded-md shadow-sm ${inputBgColor} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                 />
@@ -68,7 +71,14 @@ type Step1Props = {
             <div className="flex mt-4">
                 <button
                     type="button"
-                    onClick={onNext}
+                    onClick={ ()=> {
+                        if( formData.password === formData.confirmPass && formData.name && formData.email)  onNext 
+                        if(!formData.name ||  !formData.email) toast.error("Fill all the fields")
+                        else      toast.error("Passwords Must Match")
+                            
+
+
+                    }  }
                     className={`w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}
                 >
                     Next
