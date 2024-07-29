@@ -6,6 +6,7 @@ import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import { OtpService } from 'src/otp/otp.service';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
 
 @Injectable()
 export class UserService {
@@ -28,11 +29,19 @@ export class UserService {
     this.mailservice.sendMail(user.email, otp);
     return {
       message: `OTP sent to the mail address. Enter OTP  to verify at the  given url`,
-      url: 'http://localhost:5000/api/verify_otp',
+      url: `http://localhost:5000/api/verify_otp/${user.id}`,
     };
   }
 
-  verifyOtp(token: string, uid: number) {
-    this.otpService.verifyOtp(token, uid);
+  async verifyOtp(verifyOtp: VerifyOtpDto) {
+    const isValidOtp = this.otpService.verifyOtp(verifyOtp.otp, verifyOtp.uid);
+    if (isValidOtp) {
+      const user = await this.userRepo.findOneBy({ id: verifyOtp.uid });
+      user.is_active = true;
+      user.contact = verifyOtp.contact;
+      user.address = verifyOtp.address;
+
+      await this.userRepo.save(user);
+    }
   }
 }

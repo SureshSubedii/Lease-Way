@@ -35,4 +35,10 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updated_at: Date;
+
+  @Column()
+  contact: string;
+
+  @Column()
+  address: string;
 }
