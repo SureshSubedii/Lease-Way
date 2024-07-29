@@ -1,8 +1,11 @@
 import { TERipple } from 'tw-elements-react';
 import { useTheme } from '../ThemeContext';
+import { useNavigate } from 'react-router';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
+  const navigate = useNavigate()
+
 
   // Define color classes based on the theme
   const bgColor = theme === 'Dark' ? 'bg-gray-800' : 'bg-white';
@@ -92,8 +95,8 @@ export default function LoginForm(): JSX.Element {
           <p className={`mt-6 text-center ${textColor}`}>
             Not a member?{' '}
             <a
-              href="#!"
-              className={`text-blue-500 hover:text-blue-600 ${theme === 'Dark' ? 'Dark:text-blue-400 Dark:hover:text-blue-300' : ''}`}
+            onClick={()=> navigate("/signup") }
+              className={`text-blue-500 hover:text-blue-600 cursor-pointer ${theme === 'Dark' ? 'Dark:text-blue-400 Dark:hover:text-blue-300' : ''}`}
             >
               Register
             </a>
