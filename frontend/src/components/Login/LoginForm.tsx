@@ -1,5 +1,4 @@
-import { TERipple } from 'tw-elements-react';
-import { useTheme } from '../ThemeContext';
+import { useTheme } from '../../ThemeContext';
 import { useNavigate } from 'react-router';
 
 export default function LoginForm(): JSX.Element {
@@ -82,14 +81,12 @@ export default function LoginForm(): JSX.Element {
           </div>
 
           {/* Submit button */}
-          <TERipple rippleColor="light" className="w-full">
             <button
               type="button"
               className={`w-full ${buttonBgColor} text-white font-medium py-2 px-4 rounded-lg shadow-md ${buttonHoverBgColor} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}
             >
               Sign in
             </button>
-          </TERipple>
 
           {/* Register link */}
           <p className={`mt-6 text-center ${textColor}`}>

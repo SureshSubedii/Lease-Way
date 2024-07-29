@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './ThemeContext';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
+import LoginForm from './components/Login/LoginForm';
+import RegisterForm from './components/Registration/RegisterForm';
 import './App.css';
 
 function AppContent() {

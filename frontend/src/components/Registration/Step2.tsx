@@ -1,11 +1,7 @@
-import { useTheme } from "../ThemeContext";
-type Step2Props = {
-    onPrevious: () => void;
-    formData: { name: string; email: string, password: string, contact: string, address: string, otp: number };
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import { useTheme } from "../../ThemeContext";
+import {  StepProps2 } from "../../types";
 
-const Step2: React.FC<Step2Props> = ({ onPrevious, formData, handleChange }) => {
+const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => {
     const { theme } = useTheme();
     const borderColor = theme === 'Dark' ? 'border-gray-600' : 'border-gray-300';
     const inputBgColor = theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-50';
