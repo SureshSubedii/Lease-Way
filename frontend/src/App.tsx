@@ -19,7 +19,7 @@ function AppContent() {
       <div className="flex items-center justify-center min-h-screen">
         <Router>
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/" element={<LoginForm />} />
             <Route path="/signup" element={<RegisterForm />} />
           </Routes>
         </Router>

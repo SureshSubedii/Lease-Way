@@ -46,7 +46,7 @@ export default function RegisterForm(): JSX.Element {
                 <p className={`mt-6 text-center ${textColor}`}>
                     Already have  an account?{' '}
                     <a
-                        onClick={() => navigate("/login")}
+                        onClick={() => navigate("/")}
                         className={`text-blue-500 hover:text-blue-600 cursor-pointer ${theme === 'Dark' ? 'Dark:text-blue-400 Dark:hover:text-blue-300' : ''}`}
                     >
                         LogIn

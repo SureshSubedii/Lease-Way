@@ -4,8 +4,8 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { MailService } from 'src/mail/mail.service';
-import { OtpService } from 'src/otp/otp.service';
+import { MailService } from '../mail/mail.service';
+import { OtpService } from '../otp/otp.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 
 @Injectable()
@@ -16,25 +16,30 @@ export class UserService {
     private readonly otpService: OtpService,
   ) {}
 
-  async signup(body: UserDto): Promise<Record<string, string>> {
+  async signup(body: UserDto): Promise<Record<any, any>> {
     const user =
       (await this.userRepo.findOne({ where: { email: body.email } })) ||
       this.userRepo.create();
+    if (!user.id) {
+      user.full_name = body.fullName;
+      user.email = body.email;
+      user.password = await bcrypt.hash(body.password, 10);
+    }
 
-    user.full_name = body.fullName;
-    user.email = body.email;
-    user.password = await bcrypt.hash(body.password, 10);
     await this.userRepo.save(user);
     const otp = await this.otpService.generateOtp(user);
     this.mailservice.sendMail(user.email, otp);
     return {
       message: `OTP sent to the mail address. Enter OTP  to verify at the  given url`,
-      url: `http://localhost:5000/api/verify_otp/${user.id}`,
+      uid: user.id,
     };
   }
 
   async verifyOtp(verifyOtp: VerifyOtpDto) {
-    const isValidOtp = this.otpService.verifyOtp(verifyOtp.otp, verifyOtp.uid);
+    const isValidOtp = await this.otpService.verifyOtp(
+      verifyOtp.otp,
+      verifyOtp.uid,
+    );
     if (isValidOtp) {
       const user = await this.userRepo.findOneBy({ id: verifyOtp.uid });
       user.is_active = true;
@@ -43,5 +48,6 @@ export class UserService {
 
       await this.userRepo.save(user);
     }
+    return isValidOtp;
   }
 }
