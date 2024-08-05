@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './mail.service';
 
@@ -20,8 +20,4 @@ import { MailService } from './mail.service';
   providers: [MailService],
   exports: [MailService],
 })
-export class MailModule implements OnModuleInit {
-  onModuleInit() {
-    console.log(process.env.EMAIL_HOST, process.env.EMAIL_USERNAME);
-  }
-}
+export class MailModule {}

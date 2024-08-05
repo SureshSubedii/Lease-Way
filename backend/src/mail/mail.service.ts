@@ -1,16 +1,19 @@
-import { MailerService } from '@nestjs-modules/mailer';
+import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { SentMessageInfo } from 'nodemailer';
 
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  sendMail(email, content) {
-    this.mailerService.sendMail({
+  async sendMail(email: string, content: string): Promise<SentMessageInfo> {
+    const mailOptions: ISendMailOptions = {
       from: 'Lease Way',
       to: email,
-      subject: `OTP for verification `,
-      text: `Your otp for verification is ${content}. Please use this OTP with 2 minutes`,
-    });
+      subject: 'OTP for verification',
+      text: `Your OTP for verification is ${content}. Please use this OTP within 2 minutes.`,
+    };
+
+    return this.mailerService.sendMail(mailOptions);
   }
 }

@@ -7,6 +7,7 @@ import { OtpService } from '../otp/otp.service';
 import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { Otp } from 'src/otp/otp.entity';
+import { SentMessageInfo } from 'nodemailer';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -27,9 +28,9 @@ describe('UserService', () => {
       findOneBy: jest.fn() as jest.Mock<Promise<User | null>, [object]>,
     };
 
-    mailService = {
-      sendMail: jest.fn() as jest.Mock<void, [string, string]>,
-    };
+    const mailService = {
+      sendMail: jest.fn().mockResolvedValue({} as SentMessageInfo),
+    } as unknown as MailService;
 
     otpService = {
       generateOtp: jest.fn() as jest.Mock<Promise<string>, [User]>,
