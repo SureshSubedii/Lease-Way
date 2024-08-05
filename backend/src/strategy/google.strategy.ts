@@ -1,28 +1,25 @@
+import { Injectable } from '@nestjs/common';
 import { Strategy } from 'passport-google-oauth20';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:5000', // Adjust as needed
-      scope: [
-        'profile',
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-        'https://www.googleapis.com/auth/user.addresses.read',
-      ],
+      callbackURL: 'http://localhost:5000/api/auth/google/callback',
+      scope: ['profile', 'email'],
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    const { name, emails } = profile;
+    const { emails, displayName } = profile;
+
     const user = {
-      email: emails[0].value,
-      fullName: name?.givenName + ' ' + name?.familyName,
+      email: emails[0]?.value,
+      fullName: displayName,
       accessToken,
     };
     return user;

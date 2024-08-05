@@ -82,11 +82,15 @@ export default function LoginForm(): JSX.Element {
 
           {/* Submit button */}
             <button
+            onClick={async()=>{
+              window.location.href = 'http://localhost:5000/api/auth/google'
+            }}
               type="button"
               className={`w-full ${buttonBgColor} text-white font-medium py-2 px-4 rounded-lg shadow-md ${buttonHoverBgColor} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}
             >
               Sign in
             </button>
+            <img src="../assets/google.svg" alt=""  />
 
           {/* Register link */}
           <p className={`mt-6 text-center ${textColor}`}>
