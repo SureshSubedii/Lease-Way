@@ -22,6 +22,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new LoggingInterceptor());
+  app.enableCors();
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

@@ -30,7 +30,7 @@ export class UserService {
     const otp = await this.otpService.generateOtp(user);
     this.mailservice.sendMail(user.email, otp);
     return {
-      message: `OTP sent to the mail address. Enter OTP  to verify at the  given url`,
+      message: `OTP sent to the mail address. Enter OTP  to verify User`,
       uid: user.id,
     };
   }
