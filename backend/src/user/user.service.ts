@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,8 @@ import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
 import { OtpService } from '../otp/otp.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { LoginDto } from './dto/login.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
@@ -49,5 +51,26 @@ export class UserService {
       await this.userRepo.save(user);
     }
     return isValidOtp;
+  }
+
+  async login(user: LoginDto) {
+    const checkUser = await this.userRepo.findOneBy({ email: user.email });
+
+    if (
+      checkUser &&
+      (await bcrypt.compare(user.password, checkUser.password))
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, otps, ...details } = checkUser;
+      return {
+        jwt: jwt.sign(details, process.env.JWT_SECRET),
+        username: details.full_name,
+        email: details.email,
+        role: details.role,
+        status: true,
+      };
+    }
+
+    throw new UnauthorizedException('Username or Password Incorrect');
   }
 }
