@@ -9,6 +9,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum UserRole {
+  ADMIN = 'admin',
+  TENANT = 'tenant',
+  OWNER = 'owner',
+}
 @Entity({ name: 'app_user' })
 @Unique(['email'])
 export class User {
@@ -41,4 +46,7 @@ export class User {
 
   @Column()
   address: string;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.TENANT })
+  role: UserRole;
 }
