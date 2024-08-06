@@ -1,6 +1,6 @@
 import { useTheme } from '../../ThemeContext';
 import { useNavigate } from 'react-router';
-import googleImage from '../../assets/google.jpg';
+import googleImage from '../../assets/google.png';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
