@@ -1,10 +1,10 @@
 import { useTheme } from '../../ThemeContext';
 import { useNavigate } from 'react-router';
+import googleImage from '../../assets/google.jpg';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   // Define color classes based on the theme
   const bgColor = theme === 'Dark' ? 'bg-gray-800' : 'bg-white';
@@ -81,22 +81,32 @@ export default function LoginForm(): JSX.Element {
           </div>
 
           {/* Submit button */}
-            <button
-            onClick={async()=>{
-              window.location.href = 'http://localhost:5000/api/auth/google'
+          <button
+            
+            type="button"
+            className={`w-full ${buttonBgColor} text-white font-medium py-2 px-4 rounded-lg shadow-md ${buttonHoverBgColor} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}
+          >
+            Sign in
+          </button>
+
+          <div className="flex items-center justify-center mt-6">
+            <p className={`mr-2 ${textColor}`}>Or continue with</p>
+            <img
+            onClick={async () => {
+              window.location.href = 'http://localhost:5000/api/auth/google';
             }}
-              type="button"
-              className={`w-full ${buttonBgColor} text-white font-medium py-2 px-4 rounded-lg shadow-md ${buttonHoverBgColor} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}
-            >
-              Sign in
-            </button>
-            <img src="../assets/google.svg" alt=""  />
+            src={googleImage}
+            alt="Google"
+            className="w-16 h-16 rounded-full cursor-pointer"
+          />
+
+          </div>
 
           {/* Register link */}
           <p className={`mt-6 text-center ${textColor}`}>
             Not a member?{' '}
             <a
-            onClick={()=> navigate("/signup") }
+              onClick={() => navigate("/signup")}
               className={`text-blue-500 hover:text-blue-600 cursor-pointer ${theme === 'Dark' ? 'Dark:text-blue-400 Dark:hover:text-blue-300' : ''}`}
             >
               Register
