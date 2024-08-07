@@ -15,8 +15,9 @@ export class userController {
     return this.userService.signup(body);
   }
 
-  @Post('verify_otp')
+  @Post('verify-otp')
   verifyOtp(@Body() req: VerifyOtpDto) {
+    console.log(req);
     return this.userService.verifyOtp(req);
   }
 

@@ -1,4 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
+import { UserRole } from '../user.entity';
 
 export class VerifyOtpDto {
   @IsString()
@@ -12,4 +13,7 @@ export class VerifyOtpDto {
 
   @IsNumber()
   readonly uid: number;
+
+  @IsString()
+  readonly role: UserRole;
 }

@@ -1,38 +1,48 @@
-import { useTheme } from '../../ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router';
 import googleImage from '../../assets/google.png';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
+  const { login, setStep, step, setMessage, setUid } = useAuth();
   const navigate = useNavigate();
-  const [user, setUser] = useState({email: "", password: ""})
+  const [currentUser, setcurrentUser] = useState({email: "", password: ""})
 
   // Define color classes based on the theme
   const bgColor = theme === 'Dark' ? 'bg-gray-800' : 'bg-white';
   const textColor = theme === 'Dark' ? 'text-gray-100' : 'text-gray-800';
   const borderColor = theme === 'Dark' ? 'border-gray-600' : 'border-gray-300';
   const inputBgColor = theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-50';
-  const checkboxColor = theme === 'Dark' ? 'text-blue-400' : 'text-blue-500';
   const buttonBgColor = theme === 'Dark' ? 'bg-blue-600' : 'bg-blue-500';
   const buttonHoverBgColor = theme === 'Dark' ? 'hover:bg-blue-500' : 'hover:bg-blue-600';
 
   const handleSignin = async () =>{
     try {
       const {data} = await axios.post("http://localhost:5000/api/user/login", 
-        user
+        currentUser
   
-      )
-    toast.success(data.message)
 
+      )
+      await login(data);
+
+    toast.success(data.message)
       
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    const {inactive, message,uid} = error.response?.data || null
      
-      toast.error(error.response?.data?.message || error.message)
-
+      toast.error(message|| error.message)
+      console.log(typeof inactive, step)
+      if(inactive){ 
+      setStep(2)
+      setUid(uid)
+      setMessage("*Please complete the registration process to proceed")
+      }
+      navigate(`signup`)
 
       
     }
@@ -43,7 +53,7 @@ export default function LoginForm(): JSX.Element {
 
   const handleUser = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const {name, value }= event.target
-    setUser(prevUser => ({
+    setcurrentUser(prevUser => ({
       ...prevUser,
       [name]: value
     }));  }
@@ -95,17 +105,7 @@ export default function LoginForm(): JSX.Element {
             />
           </div>
 
-          {/* Remember me checkbox */}
-          <div className="flex items-center mb-6">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              className={`h-4 w-4 ${checkboxColor} border-gray-300 rounded focus:ring-blue-500`}
-            />
-            <label htmlFor="rememberMe" className={`ml-2 ${textColor}`}>
-              Remember me
-            </label>
-          </div>
+         
 
           {/* Forgot password link */}
           <div className="text-right mb-6">

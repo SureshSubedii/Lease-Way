@@ -1,12 +1,15 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, useTheme } from './ThemeContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import LoginForm from './components/Login/LoginForm';
 import RegisterForm from './components/Registration/RegisterForm';
+import Home from './components/Home';
+
 import './App.css';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function AppContent() {
   const { toggleTheme, theme } = useTheme();
+  const {isAuthenticated} =  useAuth()
 
   return (
     <div className={`min-h-screen ${theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
@@ -19,7 +22,7 @@ function AppContent() {
       <div className="flex items-center justify-center min-h-screen">
         <Router>
           <Routes>
-            <Route path="/" element={<LoginForm />} />
+            <Route path="/" element={ !isAuthenticated? (<LoginForm />) : <Home/>} />
             <Route path="/signup" element={<RegisterForm />} />
           </Routes>
         </Router>
@@ -31,7 +34,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
+      <AuthProvider>
       <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

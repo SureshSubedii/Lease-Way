@@ -48,15 +48,19 @@ export class UserService {
       verifyOtp.otp,
       verifyOtp.uid,
     );
+    const message = { message: 'Verifcation Failed', valid: isValidOtp };
     if (isValidOtp) {
       const user = await this.userRepo.findOneBy({ id: verifyOtp.uid });
       user.is_active = true;
       user.contact = verifyOtp.contact;
       user.address = verifyOtp.address;
-
+      user.role = verifyOtp.role;
+      message.message = 'Verification Successfull';
       await this.userRepo.save(user);
+      return message;
     }
-    return isValidOtp;
+    console.log(message);
+    throw new UnauthorizedException(message);
   }
 
   async login(user: LoginDto) {
@@ -64,11 +68,13 @@ export class UserService {
     const message = {
       message: 'Username or Password Incorrect',
       inactive: false,
+      uid: 0,
     };
     if (!checkUser?.is_active) {
       message.message =
         'Registration incomplete. Please complete the registration process';
       message.inactive = true;
+      message.uid = checkUser.id;
     }
 
     if (
