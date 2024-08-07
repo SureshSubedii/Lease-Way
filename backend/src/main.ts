@@ -1,11 +1,10 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
+import * as cookieParser from 'cookie-parser';
+import * as passport from 'passport';
+import { JwtStrategy } from './strategy/jwt.strategy';
+
 dotenv.config();
 
 import { AppModule } from './app.module';
@@ -13,6 +12,12 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
+
+  app.use(passport.initialize());
+
+  passport.use(new JwtStrategy());
+
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({

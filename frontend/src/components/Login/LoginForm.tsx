@@ -1,10 +1,14 @@
 import { useTheme } from '../../ThemeContext';
 import { useNavigate } from 'react-router';
 import googleImage from '../../assets/google.png';
+import axios from 'axios';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const [user, setUser] = useState({email: "", password: ""})
 
   // Define color classes based on the theme
   const bgColor = theme === 'Dark' ? 'bg-gray-800' : 'bg-white';
@@ -14,6 +18,35 @@ export default function LoginForm(): JSX.Element {
   const checkboxColor = theme === 'Dark' ? 'text-blue-400' : 'text-blue-500';
   const buttonBgColor = theme === 'Dark' ? 'bg-blue-600' : 'bg-blue-500';
   const buttonHoverBgColor = theme === 'Dark' ? 'hover:bg-blue-500' : 'hover:bg-blue-600';
+
+  const handleSignin = async () =>{
+    try {
+      const {data} = await axios.post("http://localhost:5000/api/user/login", 
+        user
+  
+      )
+    toast.success(data.message)
+
+      
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+     
+      toast.error(error.response?.data?.message || error.message)
+
+
+      
+    }
+
+   
+
+  }
+
+  const handleUser = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    const {name, value }= event.target
+    setUser(prevUser => ({
+      ...prevUser,
+      [name]: value
+    }));  }
 
   return (
     <div className={`flex items-center justify-center min-h-screen ${theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
@@ -35,6 +68,8 @@ export default function LoginForm(): JSX.Element {
               Email address
             </label>
             <input
+              onChange={ (e)=> handleUser(e)}
+              name="email"
               type="email"
               id="email"
               placeholder="Enter your email"
@@ -51,6 +86,8 @@ export default function LoginForm(): JSX.Element {
               Password
             </label>
             <input
+              onChange={ (e)=> handleUser(e)}
+              name = "password"
               type="password"
               id="password"
               placeholder="Enter your password"
@@ -82,6 +119,8 @@ export default function LoginForm(): JSX.Element {
 
           {/* Submit button */}
           <button
+              onClick={ ()=> handleSignin()}
+
             
             type="button"
             className={`w-full ${buttonBgColor} text-white font-medium py-2 px-4 rounded-lg shadow-md ${buttonHoverBgColor} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out`}

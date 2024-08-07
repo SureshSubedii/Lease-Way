@@ -9,6 +9,7 @@ import { OtpService } from '../otp/otp.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import * as jwt from 'jsonwebtoken';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -26,9 +27,14 @@ export class UserService {
       user.full_name = body.fullName;
       user.email = body.email;
       user.password = await bcrypt.hash(body.password, 10);
+      await this.userRepo.save(user);
+    }
+    if (user?.is_active) {
+      return {
+        message: 'User Already Registered',
+      };
     }
 
-    await this.userRepo.save(user);
     const otp = await this.otpService.generateOtp(user);
     this.mailservice.sendMail(user.email, otp);
     return {
@@ -55,9 +61,19 @@ export class UserService {
 
   async login(user: LoginDto) {
     const checkUser = await this.userRepo.findOneBy({ email: user.email });
+    const message = {
+      message: 'Username or Password Incorrect',
+      inactive: false,
+    };
+    if (!checkUser?.is_active) {
+      message.message =
+        'Registration incomplete. Please complete the registration process';
+      message.inactive = true;
+    }
 
     if (
       checkUser &&
+      checkUser.is_active &&
       (await bcrypt.compare(user.password, checkUser.password))
     ) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -68,9 +84,14 @@ export class UserService {
         email: details.email,
         role: details.role,
         status: true,
+        message: 'Login Successfull',
       };
     }
 
-    throw new UnauthorizedException('Username or Password Incorrect');
+    throw new UnauthorizedException(message);
+  }
+
+  async autoLogin(req: Request) {
+    console.log(req.cookies['jwt']);
   }
 }

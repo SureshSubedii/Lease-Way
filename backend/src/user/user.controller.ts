@@ -1,9 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
+import { Request } from 'express';
+import { JwtAuthGuard } from 'src/guards/auth.guard';
 
 @Controller('user')
 export class userController {
@@ -27,5 +29,11 @@ export class userController {
     res.cookie('jwt', jwt, { secure: true, httpOnly: true }).json(data);
 
     return data;
+  }
+
+  @Post('auto-login')
+  @UseGuards(JwtAuthGuard)
+  autoLogin(@Req() req: Request) {
+    return this.userService.autoLogin(req);
   }
 }
