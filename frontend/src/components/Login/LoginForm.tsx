@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
-  const { login, setStep, step, setMessage, setUid } = useAuth();
+  const { login, setStep, setMessage, setUid } = useAuth();
   const navigate = useNavigate();
   const [currentUser, setcurrentUser] = useState({email: "", password: ""})
 
@@ -24,8 +24,6 @@ export default function LoginForm(): JSX.Element {
     try {
       const {data} = await axios.post("http://localhost:5000/api/user/login", 
         currentUser
-  
-
       )
       await login(data);
 
@@ -36,13 +34,14 @@ export default function LoginForm(): JSX.Element {
     const {inactive, message,uid} = error.response?.data || null
      
       toast.error(message|| error.message)
-      console.log(typeof inactive, step)
       if(inactive){ 
       setStep(2)
       setUid(uid)
       setMessage("*Please complete the registration process to proceed")
-      }
       navigate(`signup`)
+      }
+      sessionStorage.setItem('autoLoginHasRun', 'true');
+
 
       
     }

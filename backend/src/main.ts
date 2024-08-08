@@ -27,7 +27,10 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new LoggingInterceptor());
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

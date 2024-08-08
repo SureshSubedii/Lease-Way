@@ -6,10 +6,51 @@ import Home from './components/Home';
 
 import './App.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function AppContent() {
   const { toggleTheme, theme } = useTheme();
-  const {isAuthenticated} =  useAuth()
+  axios.defaults.withCredentials = true
+
+  const {isAuthenticated, logout} =  useAuth()
+  const autoLogin = async()=>{
+    try {
+    await axios.post("http://localhost:5000/api/user/auto-login",{},);
+      
+    } catch (error) {
+      toast.error("Session Expired. Please Login Again")
+      handleLogout(false)
+      
+    }
+  }
+
+  const handleLogout = async(call = true)=>{
+   
+  if(call) {
+     const {data}  =  await axios.post("http://localhost:5000/api/user/logout")
+    toast.success(data.message)
+  }
+
+    localStorage.clear()
+    logout()
+    
+
+  }
+
+  useEffect( ()=>{
+    const hasRun = sessionStorage.getItem('autoLoginHasRun');
+    console.log(hasRun)
+    if(hasRun !== "true"){
+      if(isAuthenticated){
+        autoLogin()
+        sessionStorage.setItem('autoLoginHasRun', 'true');
+
+      }}
+
+
+  },[])
 
   return (
     <div className={`min-h-screen ${theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
@@ -18,6 +59,12 @@ function AppContent() {
         className="fixed top-4 right-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
       >
         {theme} mode
+      </button>
+      <button
+        onClick={()=>handleLogout()}
+        className="fixed top-4 right-40 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
+      >
+        Log Out
       </button>
       <div className="flex items-center justify-center min-h-screen">
         <Router>

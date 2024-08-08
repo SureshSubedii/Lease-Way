@@ -1,10 +1,9 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
-import { Request } from 'express';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
 
 @Controller('user')
@@ -26,15 +25,36 @@ export class userController {
     const user = await this.userService.login(req);
     console.log(user);
     const { jwt, ...data } = user;
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-    res.cookie('jwt', jwt, { secure: true, httpOnly: true }).json(data);
+    res
+      .cookie('jwt', jwt, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        expires: expirationDate,
+      })
+      .json(data);
 
     return data;
   }
 
   @Post('auto-login')
   @UseGuards(JwtAuthGuard)
-  autoLogin(@Req() req: Request) {
-    return this.userService.autoLogin(req);
+  autoLogin(): void {}
+
+  @Post('logout')
+  logout(@Res() res: Response) {
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() - 10000);
+
+    res.cookie('jwt', '', {
+      httpOnly: true,
+      secure: false,
+      path: '/',
+      expires: expirationDate,
+    });
+    res.status(200).json({ message: 'Logout Successfull', status: true });
   }
 }

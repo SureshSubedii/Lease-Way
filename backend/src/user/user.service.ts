@@ -9,7 +9,6 @@ import { OtpService } from '../otp/otp.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import * as jwt from 'jsonwebtoken';
-import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -70,7 +69,7 @@ export class UserService {
       inactive: false,
       uid: 0,
     };
-    if (!checkUser?.is_active) {
+    if (checkUser && !checkUser.is_active) {
       message.message =
         'Registration incomplete. Please complete the registration process';
       message.inactive = true;
@@ -95,9 +94,5 @@ export class UserService {
     }
 
     throw new UnauthorizedException(message);
-  }
-
-  async autoLogin(req: Request) {
-    console.log(req.cookies['jwt']);
   }
 }
