@@ -82,7 +82,7 @@ export default function LoginForm(): JSX.Element {
       handleGoogleCallback({email,username})
 
       }
-    },[])
+    })
 
   return (
     <div className={`flex items-center justify-center min-h-screen ${theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>

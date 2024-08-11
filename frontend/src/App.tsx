@@ -42,7 +42,6 @@ function AppContent() {
 
   useEffect( ()=>{
     const hasRun = sessionStorage.getItem('autoLoginHasRun');
-    console.log(hasRun)
     if(hasRun !== "true"){
       if(isAuthenticated){
         autoLogin()
@@ -61,12 +60,14 @@ function AppContent() {
       >
         {theme} mode
       </button>
-      <button
-        onClick={()=>handleLogout()}
-        className="fixed top-4 right-40 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
-      >
-        Log Out
-      </button>
+      {isAuthenticated &&
+       <button
+       onClick={()=>handleLogout()}
+       className="fixed top-4 right-40 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
+     >
+       Log Out
+     </button> }
+     
       <div className="flex items-center justify-center min-h-screen">
         <Router>
           <Routes>

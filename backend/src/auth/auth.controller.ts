@@ -29,6 +29,8 @@ export class AuthController {
       error = true;
     }
 
-    res.redirect(`http://localhost:5173/?error=${error}`);
+    res.redirect(
+      `http://localhost:5173/?error=${error}&email=${req.user.email}&username=${req.user.fullName}`,
+    );
   }
 }
