@@ -12,7 +12,23 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res) {
-    this.authService.googleSignup(req.user);
-    res.redirect('http://localhost:5173');
+    let error = false;
+    try {
+      const token = await this.authService.googleSignup(req.user);
+      const expirationDate = new Date();
+      expirationDate.setTime(
+        expirationDate.getTime() + 30 * 24 * 60 * 60 * 1000,
+      );
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        expires: expirationDate,
+      });
+    } catch (err) {
+      error = true;
+    }
+
+    res.redirect(`http://localhost:5173/?error=${error}`);
   }
 }

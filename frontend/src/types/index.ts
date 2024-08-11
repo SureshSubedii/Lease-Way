@@ -7,3 +7,11 @@ export interface StepProps {
 export interface StepProps2 extends Omit<StepProps, 'onNext'> {
     onPrevious: () => void;
 }
+
+
+export interface User{
+    username:string,
+    email: string
+  
+  
+  }

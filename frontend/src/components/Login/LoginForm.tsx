@@ -2,9 +2,10 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router';
 import googleImage from '../../assets/google.png';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext';
+import { User } from '../../types';
 
 export default function LoginForm(): JSX.Element {
   const { theme } = useTheme();
@@ -56,12 +57,32 @@ export default function LoginForm(): JSX.Element {
 
   }
 
+  const handleGoogleCallback = async(data: User)=> {
+    await login(data)
+    toast.success("SignUp Success ")
+    navigate("/")
+
+  }
   const handleUser = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const {name, value }= event.target
     setcurrentUser(prevUser => ({
       ...prevUser,
       [name]: value
     }));  }
+
+    useEffect(()=>{
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(url.search);
+      const error = params.get('error');
+      if(error === "true"){
+        toast.error("Google Signup Failed. User already Exists")
+      }else if(error === "false"){
+      const email = params.get('email') || "";
+      const username = params.get('username') || "";
+      handleGoogleCallback({email,username})
+
+      }
+    },[])
 
   return (
     <div className={`flex items-center justify-center min-h-screen ${theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>

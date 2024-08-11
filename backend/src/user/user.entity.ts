@@ -49,4 +49,7 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.TENANT })
   role: UserRole;
+
+  @Column({ default: false })
+  google: boolean;
 }

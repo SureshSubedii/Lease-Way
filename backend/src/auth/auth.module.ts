@@ -13,7 +13,7 @@ import { User } from 'src/user/user.entity';
     PassportModule.register({ defaultStrategy: 'google' }),
     HttpModule,
     UserModule,
-    TypeOrmModule.forFeature([User]), // Import User entity for repository access
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],
