@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -29,9 +33,9 @@ export class UserService {
       await this.userRepo.save(user);
     }
     if (user?.is_active) {
-      return {
+      throw new ConflictException({
         message: 'User Already Registered',
-      };
+      });
     }
 
     const otp = await this.otpService.generateOtp(user);
@@ -74,6 +78,8 @@ export class UserService {
         'Registration incomplete. Please complete the registration process';
       message.inactive = true;
       message.uid = checkUser.id;
+      (message['email'] = checkUser.email),
+        (message['username'] = checkUser.full_name);
     }
 
     if (

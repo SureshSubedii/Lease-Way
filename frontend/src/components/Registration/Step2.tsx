@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 
 const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => {
     const { theme } = useTheme();
-    const { message,uid } = useAuth();
+    const { message,uid, user } = useAuth();
     const navigate = useNavigate()
     const handleSignUp = async(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
@@ -31,6 +31,9 @@ const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => 
                 role: formData.role
               })
               toast.success(data.message)
+              sessionStorage.removeItem('step')
+              sessionStorage.removeItem('message')
+
               navigate('/')
             
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +51,8 @@ const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => 
 
     return (
         <>
+                <p className='text-red-500'> {message} </p>
+
             <div className="space-y-4">
                 <div className="mb-4">
                     <label htmlFor="address" className={`block mb-1`}>
@@ -114,7 +119,7 @@ const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => 
                     type="button"
                     onClick={async (e) => {e.preventDefault();
                         const {data} = await axios.post("http://localhost:5000/api/user/signup", {
-                            email: formData.email,
+                            email: formData.email || user?.email,
                           })
                           toast.success(data.message)
 
@@ -125,7 +130,7 @@ const Step2: React.FC<StepProps2> = ({ onPrevious, formData, handleChange }) => 
                 </button>
             </div>
             <div className="flex gap-4 mt-4">
-                {!message && (
+                {!user && (
                     <button
                         type="button"
                         onClick={onPrevious}

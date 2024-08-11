@@ -32,8 +32,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const [message, setMessage] = useState<string>("")
-    const [step, setStep] = useState<number>(()=>  Number(localStorage.getItem('step')) || 1 )
+  const [message, setMessage] = useState<string>( ()=> sessionStorage.getItem('message') ||"*Enter The OTP from the mail")
+    const [step, setStep] = useState<number>(()=>  Number(sessionStorage.getItem('step')) || 1 )
     const [uid, setUid] = useState<number>(()=>  Number(localStorage.getItem('uid')) || 0 )
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(()=> {
@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   }, [user,isAuthenticated]);
   useEffect(() => {
-    localStorage.setItem('step', String(step));
+    sessionStorage.setItem('step', String(step));
 
   }, [step])
   useEffect(() => {

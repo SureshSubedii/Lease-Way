@@ -31,14 +31,20 @@ export default function LoginForm(): JSX.Element {
       
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    const {inactive, message,uid} = error.response?.data || null
+    const {inactive, message,uid, ...details} = error.response?.data || null
      
       toast.error(message|| error.message)
       if(inactive){ 
+        const message = "*Please complete the registration process to proceed. The Otp is sent to Your Email"
       setStep(2)
       setUid(uid)
-      setMessage("*Please complete the registration process to proceed")
+      setMessage(message)
+      await  login(details)
+      sessionStorage.setItem("message", message)
       navigate(`signup`)
+       await axios.post("http://localhost:5000/api/user/signup", {
+        email: details.email,
+      })
       }
       sessionStorage.setItem('autoLoginHasRun', 'true');
 

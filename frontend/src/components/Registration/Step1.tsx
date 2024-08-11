@@ -13,6 +13,27 @@ const Step1: React.FC<StepProps> = ({ onNext, formData, handleChange }) => {
     const borderColor = theme === 'Dark' ? 'border-gray-600' : 'border-gray-300';
     const inputBgColor = theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-50';
 
+    const handleNexButton = async() =>{
+        try {
+            
+            const {data} = await axios.post("http://localhost:5000/api/user/signup", {
+              email: formData.email,
+              password: formData.password,
+              fullName: formData.name
+            })
+            setUid(data.uid)
+            toast.success(data.message)
+        onNext()
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.log(error.response)
+            toast.error(error.response?.data.message ||  error.message )
+            
+        }
+        
+    }
+
     const handleSignUp = async(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
 
@@ -31,14 +52,8 @@ const Step1: React.FC<StepProps> = ({ onNext, formData, handleChange }) => {
         }
 
         if (formData.password === formData.confirmPass) {
-           onNext()
-      const {data} = await axios.post("http://localhost:5000/api/user/signup", {
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.name
-      })
-      setUid(data.uid)
-      toast.success(data.message)
+            handleNexButton()
+    
 
            return
             

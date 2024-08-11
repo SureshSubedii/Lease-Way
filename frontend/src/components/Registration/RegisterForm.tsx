@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function RegisterForm(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {step, setStep, message, uid} = useAuth();
+    const {step, setStep} = useAuth();
     const { theme } = useTheme();
     const bgColor = theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100';
     const containerBgColor = theme === 'Dark' ? 'bg-gray-800' : 'bg-white';
@@ -39,7 +39,6 @@ export default function RegisterForm(): JSX.Element {
                 <h2 className={`text-2xl font-semibold mb-6 text-center ${textColor}`}>
                     Register
                 </h2>
-                <p className='text-red-500'> {message} </p>
 
                 <form className={`${textColor}`}>
                    {step === 1 && <Step1 onNext={handleNext} formData={formData}

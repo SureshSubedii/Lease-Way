@@ -34,6 +34,7 @@ function AppContent() {
   }
 
     localStorage.clear()
+    sessionStorage.clear()
     logout()
     
 
