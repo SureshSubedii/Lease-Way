@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from './user.service';
-import { User } from './user.entity';
+import { User, UserRole } from './user.entity';
 import { MailService } from '../mail/mail.service';
 import { OtpService } from '../otp/otp.service';
 import { UserDto } from './dto/user.dto';
@@ -151,6 +151,7 @@ describe('UserService', () => {
         uid: 1,
         contact: '123-456-7890',
         address: '123 Main St',
+        role: UserRole.TENANT,
       };
 
       otpService.verifyOtp.mockResolvedValue(true);
@@ -189,6 +190,7 @@ describe('UserService', () => {
         uid: 1,
         contact: '123-456-7890',
         address: '123 Main St',
+        role: UserRole.TENANT,
       };
 
       otpService.verifyOtp.mockResolvedValue(false);
