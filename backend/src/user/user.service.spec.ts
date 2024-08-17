@@ -8,6 +8,7 @@ import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { Otp } from 'src/otp/otp.entity';
 import { SentMessageInfo } from 'nodemailer';
+import { UnauthorizedException } from '@nestjs/common';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -27,11 +28,11 @@ describe('UserService', () => {
       save: jest.fn() as jest.Mock<Promise<User>, [User]>,
       findOneBy: jest.fn() as jest.Mock<Promise<User | null>, [object]>,
     };
+    jest.clearAllMocks();
 
-    const mailService = {
+    mailService = {
       sendMail: jest.fn().mockResolvedValue({} as SentMessageInfo),
-    } as unknown as MailService;
-
+    };
     otpService = {
       generateOtp: jest.fn() as jest.Mock<Promise<string>, [User]>,
       verifyOtp: jest.fn() as jest.Mock<Promise<boolean>, [string, number]>,
@@ -78,6 +79,7 @@ describe('UserService', () => {
         otps: {} as Otp, // Mock an empty Otp object
         createdAt: new Date(),
         updated_at: new Date(),
+        role: UserRole.TENANT,
       };
       userRepo.findOne.mockResolvedValue(new User());
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,7 +88,7 @@ describe('UserService', () => {
       userRepo.save.mockResolvedValue(user as User);
 
       otpService.generateOtp.mockResolvedValue('123456');
-      mailService.sendMail.mockResolvedValue;
+      mailService.sendMail.mockResolvedValue({});
 
       await userService.signup(userDto);
 
@@ -135,7 +137,7 @@ describe('UserService', () => {
         where: { email: userDto.email },
       });
       expect(userRepo.create).not.toHaveBeenCalled(); // No creation should happen
-      expect(userRepo.save).toHaveBeenCalledWith(existingUser);
+      expect(userRepo.save).not.toHaveBeenCalled();
       expect(otpService.generateOtp).toHaveBeenCalledWith(existingUser);
       expect(mailService.sendMail).toHaveBeenCalledWith(
         existingUser.email,
@@ -180,8 +182,12 @@ describe('UserService', () => {
         is_active: true,
         contact: verifyOtpDto.contact,
         address: verifyOtpDto.address,
+        role: 'tenant',
       });
-      expect(result).toBe(true);
+      expect(result).toStrictEqual({
+        message: 'Verification Successfull',
+        valid: true,
+      });
     });
 
     it('should return false for invalid OTP', async () => {
@@ -195,7 +201,7 @@ describe('UserService', () => {
 
       otpService.verifyOtp.mockResolvedValue(false);
 
-      const result = await userService.verifyOtp(verifyOtpDto);
+      const result = userService.verifyOtp(verifyOtpDto);
 
       expect(otpService.verifyOtp).toHaveBeenCalledWith(
         verifyOtpDto.otp,
@@ -203,7 +209,12 @@ describe('UserService', () => {
       );
       expect(userRepo.findOneBy).not.toHaveBeenCalled();
       expect(userRepo.save).not.toHaveBeenCalled();
-      expect(result).toBe(false);
+      await expect(result).rejects.toThrow(
+        new UnauthorizedException({
+          message: 'Verification Failed',
+          valid: false,
+        }),
+      );
     });
   });
 });

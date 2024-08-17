@@ -87,7 +87,6 @@ describe('AuthModule', () => {
       mockUser.google = false;
 
       userRepo.findOneBy.mockResolvedValue(mockUser);
-      //   const result = await authService.googleSignup(user);
       expect(userRepo.save).not.toHaveBeenCalled();
       expect(userRepo.create).not.toHaveBeenCalled();
       await expect(authService.googleSignup(user)).rejects.toThrow(

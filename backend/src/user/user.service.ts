@@ -51,7 +51,7 @@ export class UserService {
       verifyOtp.otp,
       verifyOtp.uid,
     );
-    const message = { message: 'Verifcation Failed', valid: isValidOtp };
+    const message = { message: 'Verification Failed', valid: isValidOtp };
     if (isValidOtp) {
       const user = await this.userRepo.findOneBy({ id: verifyOtp.uid });
       user.is_active = true;
@@ -62,7 +62,6 @@ export class UserService {
       await this.userRepo.save(user);
       return message;
     }
-    console.log(message);
     throw new UnauthorizedException(message);
   }
 
