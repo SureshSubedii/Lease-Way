@@ -11,7 +11,6 @@ dotenv.config();
 
 describe('AuthModule', () => {
   let authService: AuthService;
-  let authController: AuthController;
   let userRepo: {
     create: jest.Mock<User, [Partial<User>]>;
     save: jest.Mock<Promise<User>, [Partial<User>]>;
@@ -60,12 +59,10 @@ describe('AuthModule', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    authController = module.get<AuthController>(AuthController);
   });
 
   it('should be defined', () => {
     expect(authService).toBeDefined();
-    expect(authController).toBeDefined();
   });
 
   describe('googleSignup', () => {
