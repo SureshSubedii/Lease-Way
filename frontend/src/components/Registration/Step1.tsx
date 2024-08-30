@@ -51,10 +51,8 @@ const Step1: React.FC<StepProps> = ({ onNext, formData, handleChange }) => {
             return
         }
 
-        if (formData.password === formData.confirmPass) {
+        if ( formData.password && formData.password === formData.confirmPass) {
             handleNexButton()
-    
-
            return
             
         }
