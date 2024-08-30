@@ -2,7 +2,6 @@ import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { AuthGuard } from '@nestjs/passport';
 import * as request from 'supertest';
 import { OtpService } from '../otp/otp.service';
 import { MailService } from '../mail/mail.service';
@@ -10,6 +9,7 @@ import { User } from './user.entity';
 import { SentMessageInfo } from 'nodemailer';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserDto } from './dto/user.dto';
+import { JwtAuthGuard } from '../guards/jwtAuth.guard';
 
 describe('UserController', () => {
   let app: INestApplication;
@@ -58,14 +58,14 @@ describe('UserController', () => {
         },
       ],
     })
-      .overrideGuard(AuthGuard('jwt'))
+      .overrideGuard(JwtAuthGuard)
       .useValue({
         canActivate: jest.fn((context: ExecutionContext) => {
           const req = context.switchToHttp().getRequest();
           req.user = {
-            userId: '1',
-            username: 'test user',
-            email: 'testuser@gmail.com',
+            userId: 1,
+            username: 'testuser',
+            email: 'testuser@example.com',
           };
           return true;
         }),
@@ -107,5 +107,9 @@ describe('UserController', () => {
       'OTP sent to the mail address. Enter OTP to verify User',
     );
     expect(response.body).toHaveProperty('uid', newUser.id);
+  });
+
+  it('Should Auto login', async () => {
+    await request(app.getHttpServer()).post('/user/auto-login').expect(201);
   });
 });

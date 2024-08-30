@@ -1,10 +1,10 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
-import { JwtAuthGuard } from '../guards/auth.guard';
+import { JwtAuthGuard } from '../guards/jwtAuth.guard';
 
 @Controller('user')
 export class UserController {
@@ -41,9 +41,7 @@ export class UserController {
 
   @Post('auto-login')
   @UseGuards(JwtAuthGuard)
-  autoLogin(@Req() req): void {
-    console.log(req.user);
-  }
+  autoLogin(): void {}
 
   @Post('logout')
   logout(@Res() res: Response) {
