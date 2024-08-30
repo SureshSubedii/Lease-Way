@@ -26,11 +26,12 @@ export class UserService {
     const user =
       (await this.userRepo.findOne({ where: { email: body.email } })) ||
       this.userRepo.create();
+    let savedUser: Partial<User>;
     if (!user.id) {
       user.full_name = body.fullName;
       user.email = body.email;
       user.password = await bcrypt.hash(body.password, 10);
-      await this.userRepo.save(user);
+      savedUser = await this.userRepo.save(user);
     }
     if (user?.is_active) {
       throw new ConflictException({
@@ -41,8 +42,8 @@ export class UserService {
     const otp = await this.otpService.generateOtp(user);
     this.mailservice.sendMail(user.email, otp);
     return {
-      message: `OTP sent to the mail address. Enter OTP  to verify User`,
-      uid: user.id,
+      message: `OTP sent to the mail address. Enter OTP to verify User`,
+      uid: user.id || savedUser.id,
     };
   }
 

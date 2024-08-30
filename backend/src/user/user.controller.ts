@@ -1,22 +1,21 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/guards/auth.guard';
+import { JwtAuthGuard } from '../guards/auth.guard';
 
 @Controller('user')
-export class userController {
+export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('signup')
-  signup(@Body() body: UserDto) {
+  async signup(@Body() body: UserDto) {
     return this.userService.signup(body);
   }
 
   @Post('verify-otp')
   verifyOtp(@Body() req: VerifyOtpDto) {
-    console.log(req);
     return this.userService.verifyOtp(req);
   }
 
@@ -42,7 +41,9 @@ export class userController {
 
   @Post('auto-login')
   @UseGuards(JwtAuthGuard)
-  autoLogin(): void {}
+  autoLogin(@Req() req): void {
+    console.log(req.user);
+  }
 
   @Post('logout')
   logout(@Res() res: Response) {
