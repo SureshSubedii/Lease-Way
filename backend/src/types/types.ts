@@ -1,9 +1,11 @@
-export interface User {
+export interface UserDetails {
   fullName: string;
   email: string;
-  // Add other user properties as needed
+  password?: string;
+  google?: boolean;
+  is_active?: boolean;
 }
 
 export interface CustomRequest extends Request {
-  user?: User;
+  user?: UserDetails;
 }

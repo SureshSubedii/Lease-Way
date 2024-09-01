@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ConflictException, ExecutionContext } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { ConflictException } from '@nestjs/common';
 import { Response } from 'express';
 import { CustomRequest } from 'src/types/types';
 
@@ -27,19 +26,7 @@ describe('AuthController', () => {
           },
         },
       ],
-    })
-      .overrideGuard(AuthGuard('google'))
-      .useValue({
-        canActivate: jest.fn((context: ExecutionContext) => {
-          const req = context.switchToHttp().getRequest();
-          req.user = {
-            email: 'test@example.com',
-            fullName: 'Test User',
-          };
-          return true;
-        }),
-      })
-      .compile();
+    }).compile();
     mockRes = {
       redirect: jest.fn(),
       cookie: jest.fn(),
